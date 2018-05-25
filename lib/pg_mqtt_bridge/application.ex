@@ -10,6 +10,10 @@ defmodule PgMqttBridge.Application do
     children = [
       # Starts a worker by calling: PgMqttBridge.Worker.start_link(arg)
       # {PgMqttBridge.Worker, arg},
+      PgMqttBridge.FromMqtt,
+      PgMqttBridge.ToMqtt,
+      PgMqttBridge.FromPg,
+      PgMqttBridge.ToPg
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -2,6 +2,18 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :pg_mqtt_bridge, PgMqttBridge.ToMqtt,
+  client_id: "some-name-7490",
+  host: "localhost",
+  port: 1883,
+  ssl: false
+
+config :pg_mqtt_bridge, PgMqttBridge.FromPg,
+  database: "enet_dev",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
