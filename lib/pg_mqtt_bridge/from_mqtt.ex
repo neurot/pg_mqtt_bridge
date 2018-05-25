@@ -1,22 +1,19 @@
 defmodule PgMqttBridge.FromMqtt do
-  use GenServer
-
-  def start_link(state \\ []) do
-    GenServer.start_link(__MODULE__, state)
-  end
+  use Hulaaki.Client
 
   def init(state) do
-    # Process.register(self(), :from_mqtt)
+    {:ok, pid} = start_link(%{})
+    connect(pid, Application.get_env(:pg_mqtt_bridge, PgMqttBridge.MqttConn))
+    Process.register(pid, :hulaaki)
+    subscriptions = [topics: ["dataservice/input"], qoses: [1]]
+    subscribe(:hulaaki, subscriptions)
     {:ok, state}
   end
 
-  def handle_cast(msg, state) do
-    IO.puts("#{inspect(self())} -> Message received")
-    IO.inspect(msg)
-    {:noreply, state}
-  end
-
-  def tell(to) do
-    GenServer.cast(to, "sali von #{inspect(self())}")
+  def on_subscribed_publish(mqtt_message) do
+    IO.puts(" >>> FromMqtt: " <> inspect(mqtt_message))
+    [head | _] = mqtt_message
+    message = elem(head, 1)
+    GenServer.cast(:to_pg, message)
   end
 end

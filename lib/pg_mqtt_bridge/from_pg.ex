@@ -9,16 +9,13 @@ defmodule PgMqttBridge.FromPg do
     {:ok, state}
   end
 
-  def tell(to, notification) do
-    GenServer.cast(to, notification)
-  end
-
   listen do
     channel("MQTT_PUBLISH", :on_mqtt_publish)
   end
 
   def on_mqtt_publish(_, notification) do
-    tell(:to_mqtt, notification)
+    IO.puts(" >>> FromPg: " <> inspect(notification))
+    GenServer.cast(:to_mqtt, notification)
   end
 
   def child_spec(opts) do

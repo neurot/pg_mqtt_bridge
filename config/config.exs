@@ -2,7 +2,7 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :pg_mqtt_bridge, PgMqttBridge.ToMqtt,
+config :pg_mqtt_bridge, PgMqttBridge.MqttConn,
   client_id: "some-name-7490",
   host: "localhost",
   port: 1883,
