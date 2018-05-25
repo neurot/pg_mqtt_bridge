@@ -10,7 +10,7 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def handle_cast(message, state) do
-    IO.puts(" >>> ToPg: " <> inspect(message))
+    # IO.puts(" >>> ToPg: " <> inspect(DateTime.utc_now()))
 
     unless Process.whereis(:pg_conn) do
       {:ok, pid} = Postgrex.start_link(Application.get_env(:pg_mqtt_bridge, PgMqttBridge.FromPg))
@@ -19,11 +19,12 @@ defmodule PgMqttBridge.ToPg do
 
     message_decoded = Poison.decode!(message.message)
     timestamp = DateTime.utc_now()
+    measure_value = Enum.random(1900..3000) / 100
 
     Postgrex.query!(:pg_conn, "SELECT edata.insert_into_measure_value(
       '#{timestamp}',
       '#{message_decoded["input_id"]}',
-      '#{inspect(message_decoded["measure_value"])}'
+      '#{inspect(measure_value)}'
       )", [])
 
     {:noreply, state}

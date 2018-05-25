@@ -14,7 +14,7 @@ defmodule PgMqttBridge.FromPg do
   end
 
   def on_mqtt_publish(_, notification) do
-    IO.puts(" >>> FromPg: " <> inspect(notification))
+    # IO.puts(" >>> FromPg: " <> inspect(DateTime.utc_now()))
     GenServer.cast(:to_mqtt, notification)
   end
 
