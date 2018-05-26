@@ -2,8 +2,15 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :pg_mqtt_bridge, PgMqttBridge.MqttConn,
-  client_id: "some-name-7490",
+config :pg_mqtt_bridge, PgMqttBridge.ToMqtt,
+  # inspect(Enum.random(10000..60000)),
+  client_id: "enet-23235",
+  host: "localhost",
+  port: 1883,
+  ssl: false
+
+config :pg_mqtt_bridge, PgMqttBridge.FromMqtt,
+  client_id: "enet-29828",
   host: "localhost",
   port: 1883,
   ssl: false

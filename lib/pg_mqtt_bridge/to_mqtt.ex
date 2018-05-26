@@ -24,14 +24,14 @@ defmodule PgMqttBridge.ToMqtt do
     use Hulaaki.Client
 
     def send(topic, payload, qos, retain) do
-      unless Process.whereis(:hulaaki) do
+      unless Process.whereis(:hulaaki_to) do
         {:ok, pid} = start_link(%{})
-        connect(pid, Application.get_env(:pg_mqtt_bridge, PgMqttBridge.MqttConn))
-        Process.register(pid, :hulaaki)
+        Process.register(pid, :hulaaki_to)
+        connect_loop(pid)
       end
 
       publish(
-        :hulaaki,
+        :hulaaki_to,
         topic: topic,
         message: payload,
         dup: 0,
@@ -40,6 +40,22 @@ defmodule PgMqttBridge.ToMqtt do
       )
 
       {:noreply, []}
+    end
+
+    def connect_loop(pid) do
+      mqtt_connection_string = Application.get_env(:pg_mqtt_bridge, PgMqttBridge.ToMqtt)
+      conn = connect(pid, mqtt_connection_string)
+
+      case conn do
+        :ok ->
+          IO.puts("Connected to Publish Broker.")
+          conn
+
+        _ ->
+          IO.puts("Error: Unable to connect to Publish Broker.")
+          :timer.sleep(1000)
+          connect_loop(pid)
+      end
     end
   end
 end
