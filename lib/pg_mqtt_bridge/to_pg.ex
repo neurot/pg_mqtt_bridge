@@ -10,8 +10,6 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def handle_cast(message, state) do
-    # IO.puts(" >>> ToPg: " <> inspect(DateTime.utc_now()))
-
     unless Process.whereis(:pg_conn) do
       {:ok, pid} = Postgrex.start_link(Application.get_env(:pg_mqtt_bridge, PgMqttBridge.FromPg))
       Process.register(pid, :pg_conn)

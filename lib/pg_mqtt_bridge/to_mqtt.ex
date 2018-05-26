@@ -10,13 +10,12 @@ defmodule PgMqttBridge.ToMqtt do
   end
 
   def handle_cast(message, _) do
-    # IO.puts(" >>> ToMqtt: " <> inspect(DateTime.utc_now()))
     message_map = Poison.decode!(message)
 
     PgMqttBridge.ToMqtt.SendMqtt.send(
       message_map["topic"],
       Poison.encode!(message_map["payload"]),
-      0,
+      1,
       0
     )
   end

@@ -11,7 +11,6 @@ defmodule PgMqttBridge.FromMqtt do
   end
 
   def on_subscribed_publish(mqtt_message) do
-    # IO.puts(" >>> FromMqtt: " <> inspect(DateTime.utc_now()))
     [head | _] = mqtt_message
     message = elem(head, 1)
     GenServer.cast(:to_pg, message)

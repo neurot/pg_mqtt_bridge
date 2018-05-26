@@ -18,7 +18,7 @@ defmodule PgMqttBridge.Application do
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: PgMqttBridge.Supervisor]
+    opts = [strategy: :one_for_one, max_restarts: 5000, name: PgMqttBridge.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
