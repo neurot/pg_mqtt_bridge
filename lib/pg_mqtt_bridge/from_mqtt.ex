@@ -16,11 +16,14 @@ defmodule PgMqttBridge.FromMqtt do
 
     case conn do
       :ok ->
-        IO.puts("Connected to Subscription Broker.")
+        IO.puts("Connected to Subscribe Broker.")
         conn
 
       _ ->
-        IO.puts("Error: Unable to connect to Subscription Broker.")
+        IO.puts(
+          "Error: Unable to connect to Subscribe Broker @ #{inspect(mqtt_connection_string)}."
+        )
+
         :timer.sleep(1000)
         connect_loop(pid)
     end

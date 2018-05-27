@@ -52,7 +52,10 @@ defmodule PgMqttBridge.ToMqtt do
           conn
 
         _ ->
-          IO.puts("Error: Unable to connect to Publish Broker.")
+          IO.puts(
+            "Error: Unable to connect to Publish Broker @ #{inspect(mqtt_connection_string)}."
+          )
+
           :timer.sleep(1000)
           connect_loop(pid)
       end
