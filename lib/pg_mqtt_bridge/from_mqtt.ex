@@ -30,6 +30,10 @@ defmodule PgMqttBridge.FromMqtt do
   end
 
   def on_subscribed_publish(mqtt_message) do
+    spawn(fn -> send_to_to_pg(mqtt_message) end)
+  end
+
+  def send_to_to_pg(mqtt_message) do
     [head | _] = mqtt_message
     message = elem(head, 1)
     GenServer.cast(:to_pg, message)

@@ -14,6 +14,10 @@ defmodule PgMqttBridge.FromPg do
   end
 
   def on_mqtt_publish(_, notification) do
+    spawn(fn -> send_to_to_mqtt(notification) end)
+  end
+
+  def send_to_to_mqtt(notification) do
     GenServer.cast(:to_mqtt, notification)
   end
 

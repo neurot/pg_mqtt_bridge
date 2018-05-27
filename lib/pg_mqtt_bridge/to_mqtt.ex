@@ -6,40 +6,35 @@ defmodule PgMqttBridge.ToMqtt do
   end
 
   def init(state) do
+    PgMqttBridge.ToMqtt.SendMqtt.init()
     {:ok, state}
   end
 
   def handle_cast(message, _) do
-    message_map = Poison.decode!(message)
-
-    PgMqttBridge.ToMqtt.SendMqtt.send(
-      message_map["topic"],
-      Poison.encode!(message_map["payload"]),
-      1,
-      0
-    )
+    spawn(fn -> PgMqttBridge.ToMqtt.SendMqtt.send(message) end)
+    {:noreply, []}
   end
 
   defmodule SendMqtt do
     use Hulaaki.Client
 
-    def send(topic, payload, qos, retain) do
-      unless Process.whereis(:hulaaki_to) do
-        {:ok, pid} = start_link(%{})
-        Process.register(pid, :hulaaki_to)
-        connect_loop(pid)
-      end
+    def init() do
+      {:ok, pid} = start_link(%{})
+      Process.register(pid, :hulaaki_to)
+      connect_loop(pid)
+    end
+
+    def send(message) do
+      message_map = Poison.decode!(message)
 
       publish(
         :hulaaki_to,
-        topic: topic,
-        message: payload,
+        topic: message_map["topic"],
+        message: Poison.encode!(message_map["payload"]),
         dup: 0,
-        qos: qos,
-        retain: retain
+        qos: 1,
+        retain: 0
       )
-
-      {:noreply, []}
     end
 
     def connect_loop(pid) do
