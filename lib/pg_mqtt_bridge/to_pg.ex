@@ -6,6 +6,7 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def init(state) do
+    connect_loop()
     {:ok, state}
   end
 
@@ -44,9 +45,9 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def handle_cast(message, state) do
-    unless Process.whereis(:pg_conn) do
-      connect_loop()
-    end
+    # unless Process.whereis(:pg_conn) do
+    #   connect_loop()
+    # end
 
     spawn(fn -> send_to_pg(message) end)
 
