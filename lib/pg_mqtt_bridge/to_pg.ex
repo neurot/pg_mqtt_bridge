@@ -28,7 +28,8 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def handle_cast(message, state) do
-    spawn(fn -> send_to_pg(message) end)
+    # spawn(fn -> send_to_pg(message) end)
+    send_to_pg(message)
 
     {:noreply, state}
   end
