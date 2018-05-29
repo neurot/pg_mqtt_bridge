@@ -14,6 +14,15 @@ config :pg_mqtt_bridge, PgMqttBridge.FromMqtt,
   port: 1883,
   ssl: false
 
+# config :pg_mqtt_bridge, PgMqttBridge.ToPg,
+#   pool: DBConnection.Poolboy,
+#   name: :"#{__MODULE__}_Poolboy",
+#   pool_size: 8,
+#   database: "enet_dev",
+#   username: "postgres",
+#   password: "postgres",
+#   hostname: "localhost"
+
 config :pg_mqtt_bridge, PgMqttBridge.FromPg,
   database: "enet_dev",
   username: "postgres",
