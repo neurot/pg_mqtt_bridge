@@ -7,6 +7,8 @@ defmodule PgMqttBridge.ToPg do
 
   def init(state) do
     connect_loop()
+    {:ok, counter} = Agent.start(fn -> 0 end)
+    Process.register(counter, :to_pg_counter)
     {:ok, state}
   end
 
@@ -35,11 +37,13 @@ defmodule PgMqttBridge.ToPg do
     message_decoded = Poison.decode!(message.message)
     timestamp = DateTime.utc_now()
     measure_value = Enum.random(1900..3000) / 100
+    pg_query = "SELECT edata.insert_into_measure_value('#{timestamp}', '#{message_decoded["input_id"]}', '#{inspect(measure_value)}')"
 
-    Postgrex.query!(:pg_conn, "SELECT edata.insert_into_measure_value(
-    '#{timestamp}',
-    '#{message_decoded["input_id"]}',
-    '#{inspect(measure_value)}'
-    )", [])
+    case Postgrex.query!(:pg_conn, pg_query, []) do
+      {:ok, _} -> Agent.update(:to_pg_counter, &(&1 + 1))
+      _ -> IO.puts "bad things happen..."
+    end
+
+    Agent.update(:to_pg_counter, &(&1 + 1))
   end
 end
