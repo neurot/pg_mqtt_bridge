@@ -3,14 +3,13 @@
 use Mix.Config
 
 config :pg_mqtt_bridge, PgMqttBridge.ToMqtt,
-  # inspect(Enum.random(10000..60000)),
-  client_id: "enet-23235",
+  client_id: "enet-" <> inspect(Enum.random(10000..60000)),
   host: "localhost",
   port: 1883,
   ssl: false
 
 config :pg_mqtt_bridge, PgMqttBridge.FromMqtt,
-  client_id: "enet-29828",
+  client_id: "enet-" <> inspect(Enum.random(10000..60000)),
   host: "localhost",
   port: 1883,
   ssl: false

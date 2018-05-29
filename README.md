@@ -1,1 +1,1 @@
-# PgMqttBridge
+# pg_mqtt_bridge

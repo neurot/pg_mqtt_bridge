@@ -26,20 +26,23 @@ defmodule PgMqttBridge.ToPg do
   end
 
   def handle_cast(message, state) do
-    spawn(fn -> send_to_pg(message) end)
+    # spawn(fn -> send_to_pg(message) end)
+    send_to_pg(message)
 
     {:noreply, state}
   end
 
   def send_to_pg(message) do
     message_decoded = Poison.decode!(message.message)
-    timestamp = DateTime.utc_now()
-    measure_value = Enum.random(1900..3000) / 100
+    # timestamp = DateTime.utc_now()
+    # measure_value = Enum.random(1900..3000) / 100
+    # IO.puts timestamp
+    # IO.inspect Date.to_string(message_decoded["timestamp"])
 
     Postgrex.query!(:pg_conn, "SELECT edata.insert_into_measure_value(
-    '#{timestamp}',
+    '#{message_decoded["timestamp"]}',
     '#{message_decoded["input_id"]}',
-    '#{inspect(measure_value)}'
+    '#{inspect(message_decoded["measure_value"])}'
     )", [])
   end
 end
